@@ -1,18 +1,20 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux'
 import { firestoreConnect, reduxFirebase } from 'react-redux-firebase'
 import { compose } from 'redux';
-import {deleteUser} from '../../store/actions/userActions'
+import {deleteUser, fetchUsers} from '../../store/actions/userActions'
 
 
 function Dashboard(props){
-    const { users } = props;
+    useEffect(() => {
+        props.fetchUsers();
+    }, [])
 
-    function deleteUser (e)  {
+    const deleteUserHandler = (e) =>  {
         e.preventDefault();
         const userId = e.target.dataset.id;
-        props.deleteUser(userId)
+        props.deleteUser(userId);
     }
 
     return(
@@ -20,17 +22,18 @@ function Dashboard(props){
             <h2>Users</h2>
             <div className="list">
                 {
-                    (users) ?
-                    users.map((user) => {
+                    (!props.userData.loading && props.userData.users) ?
+                    Object.entries(props.userData.users).map(([user, index]) => {
+                        const userItem = props.userData.users[user];
                         return(
-                            <div key={user.id} className="row">
+                            <div key={user} className="row">
                                 <div>
-                                    <Link to={ '/users/' + user.id } className="list-user">{ `${user.first_name} ${user.last_name}` }</Link>
+                                    <Link to={ '/users/' + user } className="list-user">{ `${userItem.first_name} ${userItem.last_name}` }</Link>
                                 </div>
                                 <div>
-                                    <Link to={ '/edit-user/' + user.id } className="caption btn btn-small">Edit</Link>
+                                    <Link to={ '/edit-user/' + user } className="caption btn btn-small">Edit</Link>
                                 </div>
-                                <div className="delete caption" onClick={deleteUser} data-id={user.id}>Delete</div>
+                                <div className="delete caption" onClick={deleteUserHandler} data-id={user}>Delete</div>
                             </div>
                         )
                     })
@@ -42,21 +45,22 @@ function Dashboard(props){
     )
 }
 
-const mapStateToProps = (state) => {
+
+
+const mapStateToProps = state => {
     return {
-        users: state.firestore.ordered.users
+        userData: state.user
     }
 }
-
-const mapDispatchToProps = (dispatch) => {
+  
+const mapDispatchToProps = dispatch => {
     return {
+        fetchUsers: () => dispatch(fetchUsers()),
         deleteUser: (user) => dispatch(deleteUser(user))
     }
 }
 
-export default compose(
-    connect(mapStateToProps, mapDispatchToProps),
-    firestoreConnect([
-        { collection: 'users' }
-    ])
-)(Dashboard)
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Dashboard)

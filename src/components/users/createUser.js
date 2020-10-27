@@ -4,7 +4,7 @@ import {createUser} from '../../store/actions/userActions'
 import { Link } from 'react-router-dom'
 
 class CreateUser extends Component {
-
+    
     handleSubmit = (e) => {
         e.preventDefault();
         var formData = new FormData(e.target)
@@ -14,6 +14,7 @@ class CreateUser extends Component {
         this.props.createUser(formObj);
         this.props.history.push("/");
     }
+
     render(){
         return(
             <div className="container">
