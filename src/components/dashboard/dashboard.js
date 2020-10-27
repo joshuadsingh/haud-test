@@ -22,7 +22,9 @@ function Dashboard(props){
             <h2>Users</h2>
             <div className="list">
                 {
-                    (!props.userData.loading && props.userData.users) ?
+                    (props.userData.loading) ?
+                    <h2>Loading...</h2> :
+                    (props.userData.users) &&
                     Object.entries(props.userData.users).map(([user, index]) => {
                         const userItem = props.userData.users[user];
                         return(
@@ -37,8 +39,6 @@ function Dashboard(props){
                             </div>
                         )
                     })
-                    :
-                    <h2>Loading...</h2>
                 }
             </div>
         </div>

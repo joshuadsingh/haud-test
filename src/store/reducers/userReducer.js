@@ -44,7 +44,7 @@ const userReducer = (state = initState, action) => {
                 error: ''
             }
         case 'CREATE_USER_SUCCESS':
-            let createUsers = state.users;
+            let createUsers = state.users || [];
             createUsers[action.payload.userId] = action.payload.user;
 
             return {
