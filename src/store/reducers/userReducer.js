@@ -1,18 +1,115 @@
 const initState = {
-    users: [
-        {id: '1', first_name: "Joshua", last_name: "Singh", address_1: "address 1", address_2: "address 2", town: "Mosta", country: "Malta", post_code: "MST1234", contact_number: "99123123"},
-        {id: '2', first_name: "George", last_name: "Orwell", address_1: "Town Hall", address_2: "Keplar22", town: "Blitz", country: "Mars", post_code: "MRS1232", contact_number: "99234234"},
-        {id: '3', first_name: "Charlie", last_name: "Harley", address_1: "Darly Estate", address_2: "Sharley Road", town: "Harlem", country: "USA", post_code: "USA1232", contact_number: "79234234"},
-        {id: '4', first_name: "Sumlee", last_name: "Dumlee", address_1: "New China Block", address_2: "Vietkong", town: "Lamdee", country: "Thailand", post_code: "TAI1003", contact_number: "99555454"},
-    ]
+    loading: true,
+    users: [],
+    error: ''
 }
 
 const userReducer = (state = initState, action) => {
     switch (action.type) {
-        case 'CREATE_USER':
-            return state;
-        case action.type.includes('ERROR'):
-            return state;
+
+        // REQUEST
+        case 'FETCH_USERS_REQUEST':
+            return {
+                ...state,
+                loading: true
+            }
+        case 'CREATE_USER_REQUEST':
+            return {
+                ...state,
+                loading: true
+            }
+        case 'DELETE_USER_REQUEST':
+            return {
+                ...state,
+                loading: true
+            }
+        case 'FETCH_USER_REQUEST':
+            return {
+                ...state,
+                loading: true
+            }
+        case 'UPDATE_USER_REQUEST':
+            return {
+                ...state,
+                loading: true
+            }
+        
+
+        // SUCCESS
+        case 'FETCH_USERS_SUCCESS':
+            return {
+                ...state,
+                loading: false,
+                users: action.payload,
+                error: ''
+            }
+        case 'CREATE_USER_SUCCESS':
+            let createUsers = state.users;
+            createUsers[action.payload.userId] = action.payload.user;
+
+            return {
+                ...state,
+                loading: false,
+                users: createUsers,
+                error: ''
+            }
+        case 'DELETE_USER_SUCCESS':
+            let deleteUsers = state.users;
+            delete deleteUsers[action.payload]
+
+            return {
+                ...state,
+                loading: false,
+                users: deleteUsers,
+                error: ''
+            }
+        case 'FETCH_USER_SUCCESS':
+            return {
+                ...state,
+                loading: false,
+                users: action.payload,
+                error: ''
+            }
+        case 'UPDATE_USER_SUCCESS':
+            return {
+                ...state,
+                loading: false,
+                users: action.payload.newUserData,
+                error: ''
+            }
+
+        // FAILURE
+        case 'FETCH_USERS_FAILURE':
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+        case 'CREATE_USER_FAILURE':
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+        case 'DELETE_USER_FAILURE':
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+        case 'FETCH_USER_FAILURE':
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+        case 'UPDATE_USER_FAILURE':
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+
         default:
             return state;
     }
